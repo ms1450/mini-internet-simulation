@@ -1,0 +1,3 @@
+PEER	DNS	krill:miniinterneteth/d_host	vtysh
+PROV	MATRIX_TARGET	routinator:miniinterneteth/d_routinator	vtysh
+CUST	MATRIX	host:miniinterneteth/d_host	vtysh
