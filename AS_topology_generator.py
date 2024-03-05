@@ -1,3 +1,5 @@
+import os
+import pickle
 import random
 
 
@@ -40,7 +42,7 @@ class InternetExchangePoint:
 
     def __str__(self):
         # String representation of the IXP including its ID and connected ASes
-        return f"IXP{self.ixp_id}\t- Connections: {[as_.as_id for as_ in self.ixp_connections]}"
+        return f"IXP{80 + self.ixp_id}\t- Connections: {[as_.as_id for as_ in self.ixp_connections]}"
 
 
 def create_ASes(stub_count, transit_count, tier1_count):
@@ -172,11 +174,12 @@ def create_p2p_connections(list_of_ASes, stub_to_transit_probability=0.1):
     available_stubs, available_transits, available_tier1s = get_as_as_list(list_of_ASes)
 
     # Establish P2P connections among tier1 ASes
-    for i, tier1 in enumerate(available_tier1s):
-        # Connect each tier1 AS with all other tier1 ASes
-        for other_tier1 in available_tier1s:
-            if tier1 != other_tier1:
-                add_p2p_connection(tier1, other_tier1)
+    connected = []
+    for tier1 in available_tier1s:
+        connected.append(tier1)
+        for pending in available_tier1s:
+            if pending not in connected:
+                add_p2p_connection(tier1, pending)
 
     # Establish P2P connections for stub ASes
     for stub in available_stubs:
@@ -331,8 +334,23 @@ if __name__ == "__main__":
     create_p2p_connections(ASes)
     IXPs = add_ixp_connections(ASes)
 
-    # Print details of ASes and IXPs
-    for as_system in ASes:
-        print(f"{as_system}")
-    for ixp in IXPs:
-        print(f"{ixp}")
+    configuration_file_name = 'Topology_' + str(total_as) + '.txt'
+    if not os.path.exists(configuration_file_name):
+        with open(configuration_file_name, 'w') as file:
+            # Print details of ASes and IXPs
+            for as_system in ASes:
+                print(f"{as_system}")
+                file.write(f"{as_system}\n")
+            for ixp in IXPs:
+                print(f"{ixp}")
+                file.write(f"{ixp}\n")
+
+    as_file_name = 'list_of_ASes_' + str(total_as) + '.pkl'
+    ixp_file_name = 'list_of_IXPs_' + str(total_as) + '.pkl'
+    if not os.path.exists(as_file_name) and not os.path.exists(ixp_file_name):
+        with open(as_file_name, 'wb') as as_file:
+            pickle.dump(ASes, as_file)
+            print(f"Saved {as_file_name}")
+        with open(ixp_file_name, 'wb') as ixp_file:
+            pickle.dump(IXPs, ixp_file)
+            print(f"Saved {ixp_file_name}")
