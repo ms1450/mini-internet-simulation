@@ -5,7 +5,7 @@ from AS_topology_generator import AutonomousSystem, InternetExchangePoint
 
 
 def print_AS_config(list_of_ASes, list_of_IXPs):
-    with open('AS_config.txt', 'w') as file:
+    with open('AS_config.txt', 'w', newline='\n') as file:
         for entry in list_of_ASes:
             if entry.as_id == 1:
                 string = str(entry.as_id) + "\tAS\tConfig\tl3_routers_krill.txt\tl3_links.txt\tempty.txt\tempty.txt\tempty.txt\n"
@@ -26,7 +26,7 @@ def get_ixp_connections(AS, IXP):
 
 
 def print_aslevel_links(list_of_ASes):
-    with open('aslevel_links.txt', 'w') as file:
+    with open('aslevel_links.txt', 'w', newline='\n') as file:
         completed = []
         for entry in list_of_ASes:
             completed.append(entry)
@@ -56,7 +56,7 @@ def get_smaller_connection(AS1, AS2):
 
 
 def print_aslevel_links_students(list_of_ASes, list_of_IXPs):
-    with open('aslevel_links_students.txt', 'w') as file:
+    with open('aslevel_links_students.txt', 'w', newline='\n') as file:
         for entry in list_of_ASes:
             for customer in entry.customers:
                 string = str(entry.as_id) + "\tPROV\tProvider\t" + str(
@@ -87,21 +87,21 @@ def print_aslevel_links_students(list_of_ASes, list_of_IXPs):
 
 
 def print_l3_routers():
-    with open('l3_routers.txt', 'w') as file:
+    with open('l3_routers.txt', 'w', newline='\n') as file:
         file.write("PEER\tDNS\thost:miniinterneteth/d_host\tvtysh\n")
         file.write("PROV\tMATRIX_TARGET\troutinator:miniinterneteth/d_routinator\tvtysh\n")
         file.write("CUST\tMATRIX\thost:miniinterneteth/d_host\tvtysh\n")
 
 
 def print_l3_routers_krill():
-    with open('l3_routers_krill.txt', 'w') as file:
+    with open('l3_routers_krill.txt', 'w', newline='\n') as file:
         file.write("PEER\tDNS\tkrill:miniinterneteth/d_host\tvtysh\n")
         file.write("PROV\tMATRIX_TARGET\troutinator:miniinterneteth/d_routinator\tvtysh\n")
         file.write("CUST\tMATRIX\thost:miniinterneteth/d_host\tvtysh\n")
 
 
 def print_l3_links():
-    with open('l3_links.txt', 'w') as file:
+    with open('l3_links.txt', 'w', newline='\n') as file:
         file.write("PEER\tPROV\t100000\t10ms\n")
         file.write("PEER\tCUST\t100000\t10ms\n")
         file.write("PROV\tCUST\t100000\t10ms\n")
@@ -119,8 +119,9 @@ if __name__ == "__main__":
         with open(ixp_file_name, 'rb') as ixp_file:
             IXPs = pickle.load(ixp_file)
             print(f'Loaded {len(IXPs)} IXPs')
-        #print_AS_config(ASes, IXPs)
-        #print_aslevel_links(ASes)
-        #print_aslevel_links_students(ASes, IXPs)
-        #print_l3_routers()
-        #print_l3_links()
+        print_AS_config(ASes, IXPs)
+        print_aslevel_links(ASes)
+        print_aslevel_links_students(ASes, IXPs)
+        print_l3_routers()
+        print_l3_routers_krill()
+        print_l3_links()
