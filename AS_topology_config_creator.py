@@ -32,18 +32,18 @@ def print_aslevel_links(list_of_ASes):
             completed.append(entry)
             for customer in entry.customers:
                 if customer not in completed:
-                    string = str(entry.as_id) + "\tPROV\tProvider\t" + str(
-                        customer.as_id) + "\tCUST\tCustomer\t100000\t2.5ms\t179." + str(entry.as_id) + "." + str(
+                    string = str(entry.as_id) + "\tRTRA\tProvider\t" + str(
+                        customer.as_id) + "\tRTRA\tCustomer\t100000\t2.5ms\t179." + str(entry.as_id) + "." + str(
                         customer.as_id) + ".0/24\n"
                     file.write(string)
             for peer in entry.peers:
                 if peer not in completed:
-                    string = str(entry.as_id) + "\tPEER\tPeer\t" + str(
-                        peer.as_id) + "\tPEER\tPeer\t100000\t2.5ms\t179." + str(entry.as_id) + "." + str(
+                    string = str(entry.as_id) + "\tRTRA\tPeer\t" + str(
+                        peer.as_id) + "\tRTRA\tPeer\t100000\t2.5ms\t179." + str(entry.as_id) + "." + str(
                         peer.as_id) + ".0/24\n"
                     file.write(string)
             for ixp in entry.ixps:
-                string = str(entry.as_id) + "\tPEER\tPeer\t" + str(
+                string = str(entry.as_id) + "\tRTRB\tPeer\t" + str(
                     80 + ixp.ixp_id) + "\tNone\tPeer\t100000\t2.5ms\t" + get_ixp_connections(entry, ixp) + "\n"
                 file.write(string)
 
@@ -59,52 +59,53 @@ def print_aslevel_links_students(list_of_ASes, list_of_IXPs):
     with open('aslevel_links_students.txt', 'w', newline='\n') as file:
         for entry in list_of_ASes:
             for customer in entry.customers:
-                string = str(entry.as_id) + "\tPROV\tProvider\t" + str(
-                    customer.as_id) + "\tCUST\tCustomer\t179." + str(entry.as_id) + "." + str(
+                string = str(entry.as_id) + "\tRTRA\tProvider\t" + str(
+                    customer.as_id) + "\tRTRA\tCustomer\t179." + str(entry.as_id) + "." + str(
                     customer.as_id) + "." + str(entry.as_id) + "/24\n"
                 file.write(string)
             for provider in entry.providers:
-                string = str(entry.as_id) + "\tCUST\tCustomer\t" + str(
-                    provider.as_id) + "\tPROV\tProvider\t179." + str(provider.as_id) + "." + str(
+                string = str(entry.as_id) + "\tRTRA\tCustomer\t" + str(
+                    provider.as_id) + "\tRTRA\tProvider\t179." + str(provider.as_id) + "." + str(
                     entry.as_id) + "." + str(entry.as_id) + "/24\n"
                 file.write(string)
             for peer in entry.peers:
-                string = str(entry.as_id) + "\tPEER\tPeer\t" + str(
-                    peer.as_id) + "\tPEER\tPeer\t179." + get_smaller_connection(entry, peer) + str(
+                string = str(entry.as_id) + "\tRTRA\tPeer\t" + str(
+                    peer.as_id) + "\tRTRA\tPeer\t179." + get_smaller_connection(entry, peer) + str(
                     entry.as_id) + "/24\n"
                 file.write(string)
             for ixp in entry.ixps:
-                string = str(entry.as_id) + "\tPEER\tPeer\t" + str(
+                string = str(entry.as_id) + "\tRTRB\tPeer\t" + str(
                     80 + ixp.ixp_id) + "\tNone\tPeer\t180." + str(80 + ixp.ixp_id) + ".0." + str(
                     entry.as_id) + "/24\n"
                 file.write(string)
 
         for ixp in list_of_IXPs:
             for connection in ixp.ixp_connections:
-                string = str(80 + ixp.ixp_id) + "\tNone\tPeer\t" + str(connection.as_id) + "\tPEER\tPeer\t180." + str(
+                string = str(80 + ixp.ixp_id) + "\tNone\tPeer\t" + str(
+                    connection.as_id) + "\tRTRB\tPeer\t180." + str(
                     80 + ixp.ixp_id) + ".0." + str(80 + ixp.ixp_id) + "/24\n"
                 file.write(string)
 
 
 def print_l3_routers():
     with open('l3_routers.txt', 'w', newline='\n') as file:
-        file.write("PEER\tDNS\thost:miniinterneteth/d_host\tvtysh\n")
-        file.write("PROV\tMATRIX_TARGET\troutinator:miniinterneteth/d_routinator\tvtysh\n")
-        file.write("CUST\tMATRIX\thost:miniinterneteth/d_host\tvtysh\n")
+        file.write("RTRA\tDNS\thost:miniinterneteth/d_host\tvtysh\n")
+        file.write("RTRB\tMATRIX_TARGET\troutinator:miniinterneteth/d_routinator\tvtysh\n")
+        file.write("RTRC\tMATRIX\thost:miniinterneteth/d_host\tvtysh\n")
 
 
 def print_l3_routers_krill():
     with open('l3_routers_krill.txt', 'w', newline='\n') as file:
-        file.write("PEER\tDNS\tkrill:miniinterneteth/d_host\tvtysh\n")
-        file.write("PROV\tMATRIX_TARGET\troutinator:miniinterneteth/d_routinator\tvtysh\n")
-        file.write("CUST\tMATRIX\thost:miniinterneteth/d_host\tvtysh\n")
+        file.write("RTRA\tDNS\tkrill:miniinterneteth/d_host\tvtysh\n")
+        file.write("RTRB\tMATRIX_TARGET\troutinator:miniinterneteth/d_routinator\tvtysh\n")
+        file.write("RTRC\tMATRIX\thost:miniinterneteth/d_host\tvtysh\n")
 
 
 def print_l3_links():
     with open('l3_links.txt', 'w', newline='\n') as file:
-        file.write("PEER\tPROV\t100000\t10ms\n")
-        file.write("PEER\tCUST\t100000\t10ms\n")
-        file.write("PROV\tCUST\t100000\t10ms\n")
+        file.write("RTRA\tRTRB\t100000\t10ms\n")
+        file.write("RTRB\tRTRC\t100000\t10ms\n")
+        file.write("RTRC\tRTRA\t100000\t10ms\n")
 
 
 if __name__ == "__main__":
