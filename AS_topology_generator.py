@@ -1,3 +1,4 @@
+import csv
 import os
 import pickle
 import random
@@ -319,6 +320,56 @@ def add_ixp_connections(list_of_ASes, probability_of_same_connection=0.1, probab
     return list_of_IXPs
 
 
+def extract_connections(ases):
+    connections = []
+    for as_ in ases:
+        # P2P Connections
+        for peer in as_.peers:
+            sorted_ids = sorted([as_.as_id, peer.as_id])
+            connection = (f"AS{sorted_ids[0]} - AS{sorted_ids[1]}", "P2P", f"AS{sorted_ids[0]}", f"AS{sorted_ids[1]}")
+            if connection not in connections:
+                connections.append(connection)
+        # P2C Connections
+        for customer in as_.customers:
+            connection = (f"AS{as_.as_id} - AS{customer.as_id}", "P2C", f"AS{as_.as_id}", f"AS{customer.as_id}")
+            if connection not in connections:
+                connections.append(connection)
+        # IXP Connections
+        for ixp in as_.ixps:
+            connection = (f"AS{as_.as_id} - IXP{ixp.ixp_id}", "IXP", f"AS{as_.as_id}", f"IXP{ixp.ixp_id}")
+            if connection not in connections:
+                connections.append(connection)
+    return connections
+
+
+def write_connections_to_csv(connections, filename):
+    with open(filename, 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(['Name', 'Type', 'Current', 'Connection'])
+        for conn in connections:
+            writer.writerow(conn)
+
+
+def write_nodes_to_csv(ases, ixps, filename):
+    with open(filename, 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(['Node', 'Type'])
+
+        # Write ASes with their types
+        for as_ in ases:
+            as_type = as_.as_type
+            if as_type == 'TIER1':
+                node_type = 'Tier 1 AS'
+            elif as_type == 'TRANSIT':
+                node_type = 'Transit AS'
+            else:  # 'STUB'
+                node_type = 'Stub AS'
+            writer.writerow([f"AS{as_.as_id}", node_type])
+        # Write IXPs
+        for ixp in ixps:
+            writer.writerow([f"IXP{ixp.ixp_id}", "IXP"])
+
+
 if __name__ == "__main__":
     # Initialize random seed for reproducibility
     random.seed(42)
@@ -347,6 +398,8 @@ if __name__ == "__main__":
 
     as_file_name = 'list_of_ASes_' + str(total_as) + '.pkl'
     ixp_file_name = 'list_of_IXPs_' + str(total_as) + '.pkl'
+    csv_connections_file_name = 'Topology_Links_' + str(total_as) + '.csv'
+    csv_nodes_file_name = 'Topology_Nodes_' + str(total_as) + '.csv'
     if not os.path.exists(as_file_name) and not os.path.exists(ixp_file_name):
         with open(as_file_name, 'wb') as as_file:
             pickle.dump(ASes, as_file)
@@ -354,3 +407,9 @@ if __name__ == "__main__":
         with open(ixp_file_name, 'wb') as ixp_file:
             pickle.dump(IXPs, ixp_file)
             print(f"Saved {ixp_file_name}")
+    if not os.path.exists(csv_connections_file_name):
+        connections = extract_connections(ASes)
+        write_connections_to_csv(connections, csv_connections_file_name)
+    if not os.path.exists(csv_nodes_file_name):
+        write_nodes_to_csv(ASes, IXPs, csv_nodes_file_name)
+
