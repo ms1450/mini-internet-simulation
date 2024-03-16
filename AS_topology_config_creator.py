@@ -4,6 +4,7 @@ import pickle
 from AS_topology_generator import AutonomousSystem, InternetExchangePoint
 
 
+# Print AS_config.txt
 def print_AS_config(list_of_ASes, list_of_IXPs):
     with open('AS_config.txt', 'w', newline='\n') as file:
         for entry in list_of_ASes:
@@ -13,10 +14,11 @@ def print_AS_config(list_of_ASes, list_of_IXPs):
                 string = str(entry.as_id) + "\tAS\tConfig\tl3_routers.txt\tl3_links.txt\tempty.txt\tempty.txt\tempty.txt\n"
             file.write(string)
         for entry in list_of_IXPs:
-            string = str(80 + entry.ixp_id) + "\tIXP\tConfig\tN/A\tN/A\tN/A\tN/A\tN/A\n"
+            string = str(entry.ixp_id) + "\tIXP\tConfig\tN/A\tN/A\tN/A\tN/A\tN/A\n"
             file.write(string)
 
 
+# Helper function for aslevel_links.txt
 def get_ixp_connections(AS, IXP):
     connections = []
     for link in IXP.ixp_connections:
@@ -25,6 +27,7 @@ def get_ixp_connections(AS, IXP):
     return ",".join(connections)
 
 
+# Print aslevel_links.txt
 def print_aslevel_links(list_of_ASes):
     with open('aslevel_links.txt', 'w', newline='\n') as file:
         completed = []
@@ -44,10 +47,11 @@ def print_aslevel_links(list_of_ASes):
                     file.write(string)
             for ixp in entry.ixps:
                 string = str(entry.as_id) + "\tRTRB\tPeer\t" + str(
-                    80 + ixp.ixp_id) + "\tNone\tPeer\t100000\t2.5ms\t" + get_ixp_connections(entry, ixp) + "\n"
+                    ixp.ixp_id) + "\tNone\tPeer\t100000\t2.5ms\t" + get_ixp_connections(entry, ixp) + "\n"
                 file.write(string)
 
 
+# Helper function for aslevel_links_students.txt
 def get_smaller_connection(AS1, AS2):
     if AS1.as_id < AS2.as_id:
         return str(AS1.as_id) + "." + str(AS2.as_id) + "."
@@ -55,6 +59,7 @@ def get_smaller_connection(AS1, AS2):
         return str(AS2.as_id) + "." + str(AS1.as_id) + "."
 
 
+# Print as_level_links_students.txt
 def print_aslevel_links_students(list_of_ASes, list_of_IXPs):
     with open('aslevel_links_students.txt', 'w', newline='\n') as file:
         for entry in list_of_ASes:
@@ -75,18 +80,19 @@ def print_aslevel_links_students(list_of_ASes, list_of_IXPs):
                 file.write(string)
             for ixp in entry.ixps:
                 string = str(entry.as_id) + "\tRTRB\tPeer\t" + str(
-                    80 + ixp.ixp_id) + "\tNone\tPeer\t180." + str(80 + ixp.ixp_id) + ".0." + str(
+                    ixp.ixp_id) + "\tNone\tPeer\t180." + str(ixp.ixp_id) + ".0." + str(
                     entry.as_id) + "/24\n"
                 file.write(string)
 
         for ixp in list_of_IXPs:
             for connection in ixp.ixp_connections:
-                string = str(80 + ixp.ixp_id) + "\tNone\tPeer\t" + str(
+                string = str(ixp.ixp_id) + "\tNone\tPeer\t" + str(
                     connection.as_id) + "\tRTRB\tPeer\t180." + str(
-                    80 + ixp.ixp_id) + ".0." + str(80 + ixp.ixp_id) + "/24\n"
+                    ixp.ixp_id) + ".0." + str(ixp.ixp_id) + "/24\n"
                 file.write(string)
 
 
+# Print l3_routers.txt
 def print_l3_routers():
     with open('l3_routers.txt', 'w', newline='\n') as file:
         file.write("RTRA\tDNS\thost:miniinterneteth/d_host\tvtysh\n")
@@ -94,6 +100,7 @@ def print_l3_routers():
         file.write("RTRC\tMATRIX\thost:miniinterneteth/d_host\tvtysh\n")
 
 
+# Print l3_routers_krill.txt
 def print_l3_routers_krill():
     with open('l3_routers_krill.txt', 'w', newline='\n') as file:
         file.write("RTRA\tDNS\tkrill:miniinterneteth/d_host\tvtysh\n")
@@ -101,6 +108,7 @@ def print_l3_routers_krill():
         file.write("RTRC\tMATRIX\thost:miniinterneteth/d_host\tvtysh\n")
 
 
+# Print l3_links.txt
 def print_l3_links():
     with open('l3_links.txt', 'w', newline='\n') as file:
         file.write("RTRA\tRTRB\t100000\t10ms\n")
@@ -114,15 +122,21 @@ if __name__ == "__main__":
     ASes = []
     IXPs = []
     if os.path.exists(as_file_name) and os.path.exists(ixp_file_name):
+        print("[+]\tLoading AS and IXP files...")
         with open(as_file_name, 'rb') as as_file:
             ASes = pickle.load(as_file)
-            print(f'Loaded {len(ASes)} ASes')
+            print(f'[+]\t\tLoaded {len(ASes)} ASes')
         with open(ixp_file_name, 'rb') as ixp_file:
             IXPs = pickle.load(ixp_file)
-            print(f'Loaded {len(IXPs)} IXPs')
-        print_AS_config(ASes, IXPs)
-        print_aslevel_links(ASes)
-        print_aslevel_links_students(ASes, IXPs)
-        print_l3_routers()
-        print_l3_routers_krill()
-        print_l3_links()
+            print(f'[+]\t\tLoaded {len(IXPs)} IXPs')
+            print("[+]\tCreating Configuration files...")
+            print_AS_config(ASes, IXPs)
+            print_aslevel_links(ASes)
+            print_aslevel_links_students(ASes, IXPs)
+            print_l3_routers()
+            print_l3_routers_krill()
+            print_l3_links()
+            print("[+]\tCompleted")
+    else:
+        print("[-]\tAS and IXP files not found.")
+

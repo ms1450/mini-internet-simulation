@@ -43,7 +43,7 @@ class InternetExchangePoint:
 
     def __str__(self):
         # String representation of the IXP including its ID and connected ASes
-        return f"IXP{80 + self.ixp_id}\t- Connections: {[as_.as_id for as_ in self.ixp_connections]}"
+        return f"IXP{self.ixp_id}\t- Connections: {[as_.as_id for as_ in self.ixp_connections]}"
 
 
 def create_ASes(stub_count, transit_count, tier1_count):
@@ -228,7 +228,7 @@ def create_p2p_connections(list_of_ASes, stub_to_transit_probability=0.1):
 def add_ixp_connections(list_of_ASes, probability_of_same_connection=0.1, probability_of_cross_connection=0.05):
     # Initialize a list to hold all IXPs
     list_of_IXPs = []
-    ixp_id = 1
+    ixp_id = 81
     stubs, transits, tier1s = get_as_as_list(list_of_ASes)
 
     # Create IXP between Tier 1
@@ -320,6 +320,7 @@ def add_ixp_connections(list_of_ASes, probability_of_same_connection=0.1, probab
     return list_of_IXPs
 
 
+# Extract Connections to later be stored as CSV
 def extract_connections(ases):
     connections = []
     for as_ in ases:
@@ -342,6 +343,7 @@ def extract_connections(ases):
     return connections
 
 
+# Write Connections to CSV File
 def write_connections_to_csv(connections, filename):
     with open(filename, 'w', newline='') as csvfile:
         writer = csv.writer(csvfile)
@@ -350,6 +352,7 @@ def write_connections_to_csv(connections, filename):
             writer.writerow(conn)
 
 
+# Create a CSV of Nodes
 def write_nodes_to_csv(ases, ixps, filename):
     with open(filename, 'w', newline='') as csvfile:
         writer = csv.writer(csvfile)
@@ -386,30 +389,33 @@ if __name__ == "__main__":
     IXPs = add_ixp_connections(ASes)
 
     configuration_file_name = 'Topology_' + str(total_as) + '.txt'
-    if not os.path.exists(configuration_file_name):
-        with open(configuration_file_name, 'w') as file:
-            # Print details of ASes and IXPs
-            for as_system in ASes:
-                print(f"{as_system}")
-                file.write(f"{as_system}\n")
-            for ixp in IXPs:
-                print(f"{ixp}")
-                file.write(f"{ixp}\n")
-
     as_file_name = 'list_of_ASes_' + str(total_as) + '.pkl'
     ixp_file_name = 'list_of_IXPs_' + str(total_as) + '.pkl'
     csv_connections_file_name = 'Topology_Links_' + str(total_as) + '.csv'
     csv_nodes_file_name = 'Topology_Nodes_' + str(total_as) + '.csv'
+
+    print("[+]\tConfiguring Topology: ", configuration_file_name)
+    with open(configuration_file_name, 'w') as file:
+        # Print details of ASes and IXPs
+        for as_system in ASes:
+            file.write(f"{as_system}\n")
+        for ixp in IXPs:
+            file.write(f"{ixp}\n")
+
     if not os.path.exists(as_file_name) and not os.path.exists(ixp_file_name):
+        print("[+]\tCreating Dataset of ASes...")
         with open(as_file_name, 'wb') as as_file:
             pickle.dump(ASes, as_file)
-            print(f"Saved {as_file_name}")
+            print(f"[+]\t\tSaved {as_file_name}")
+        print("[+]\tCreating Dataset of IXPs...")
         with open(ixp_file_name, 'wb') as ixp_file:
             pickle.dump(IXPs, ixp_file)
-            print(f"Saved {ixp_file_name}")
+            print(f"[+]\t\tSaved {ixp_file_name}")
+    if not os.path.exists(csv_nodes_file_name):
+        print("[+]\tCreating Nodes...")
+        write_nodes_to_csv(ASes, IXPs, csv_nodes_file_name)
     if not os.path.exists(csv_connections_file_name):
+        print("[+]\tCreating Links between Nodes...")
         connections = extract_connections(ASes)
         write_connections_to_csv(connections, csv_connections_file_name)
-    if not os.path.exists(csv_nodes_file_name):
-        write_nodes_to_csv(ASes, IXPs, csv_nodes_file_name)
-
+    print("[+]\tCompleted")

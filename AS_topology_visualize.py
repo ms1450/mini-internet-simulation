@@ -2,25 +2,6 @@ import networkx as nx
 import plotly.graph_objects as go
 import csv
 
-# Load node and edge data
-nodes = {}
-edges = []
-edge_types = []
-
-# Read the node data
-with open('Topology_Nodes_50.csv', 'r') as csvfile:
-    csvreader = csv.reader(csvfile)
-    next(csvreader)  # Skip the header
-    for row in csvreader:
-        nodes[row[0]] = {'type': row[1]}
-
-# Read the edge data
-with open('Topology_Links_50.csv', 'r') as csvfile:
-    csvreader = csv.reader(csvfile)
-    next(csvreader)  # Skip the header
-    for row in csvreader:
-        edges.append((row[2], row[3]))
-        edge_types.append(row[1])
 
 # Function to create a graph and its visualization
 def create_graph(nodes, edges, edge_types, title, exclude_ixp=False):
@@ -78,10 +59,34 @@ def create_graph(nodes, edges, edge_types, title, exclude_ixp=False):
 
     return fig
 
-# Create and show the first graph (including all connections)
-fig1 = create_graph(nodes, edges, edge_types, 'Network graph of ASes and IXPs (Including IXPs)')
-fig1.show()
 
-# Create and show the second graph (excluding IXPs)
-fig2 = create_graph(nodes, edges, edge_types, 'Network graph of ASes (Excluding IXPs)', exclude_ixp=True)
-fig2.show()
+if __name__ == '__main__':
+    # Load node and edge data
+    nodes = {}
+    edges = []
+    edge_types = []
+
+    # Read the node data
+    with open('Topology_Nodes_50.csv', 'r') as csvfile:
+        csvreader = csv.reader(csvfile)
+        next(csvreader)  # Skip the header
+        for row in csvreader:
+            nodes[row[0]] = {'type': row[1]}
+
+    # Read the edge data
+    with open('Topology_Links_50.csv', 'r') as csvfile:
+        csvreader = csv.reader(csvfile)
+        next(csvreader)  # Skip the header
+        for row in csvreader:
+            edges.append((row[2], row[3]))
+            edge_types.append(row[1])
+
+    # Create and show the first graph (including all connections)
+    print("[+]\tShowing Network Graph of ASes and IXPs")
+    fig1 = create_graph(nodes, edges, edge_types, 'Network graph of ASes and IXPs')
+    fig1.show()
+
+    # Create and show the second graph (excluding IXPs)
+    print("[+]\tShowing Network Graph of ASes")
+    fig2 = create_graph(nodes, edges, edge_types, 'Network graph of ASes', exclude_ixp=True)
+    fig2.show()

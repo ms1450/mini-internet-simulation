@@ -1,0 +1,41 @@
+2024-02-19T19:59:48
+BGP table version is 220, local router ID is 5.151.0.1, vrf id 0
+Default local pref 100, local AS 5
+Status codes:	s suppressed, d damped, h history, * valid, > best, = multipath,
+		        i internal, r RIB-failure, S Stale, R Removed
+Nexthop codes: @NNN nexthop's vrf id, < announce-nh-self
+Origin codes: i - IGP, e - EGP, ? - incomplete
+RPKI validation codes: V valid, I invalid, N Not found
+   Network          Next Hop            Metric LocPrf Weight Path
+V*  1.0.0.0/8        179.4.5.4                     120      0 4 1 i
+V*>                  179.3.5.3 		               120      0 3 1 i
+V*  2.0.0.0/8        179.4.5.4                     120      0 4 2 i
+V*>                  179.3.5.3                     120      0 3 2 i
+V*  3.0.0.0/8        179.4.5.4                     120      0 4 3 i
+V*>                  179.3.5.3                0    120      0 3 i
+V*> 4.0.0.0/8        179.4.5.4                0    120      0 4 i
+V*                   179.3.5.3                     120      0 3 4 i
+V* i5.0.0.0/8        5.152.0.1                0    100      0 i
+V* i                 5.153.0.1                0    100      0 i
+V*>                  0.0.0.0                  0         32768 i
+V*> 6.0.0.0/8        179.5.6.6                0    150      0 6 i
+V*                   179.4.5.4                     120      0 4 3 6 i
+V*                   179.3.5.3                     120      0 3 6 i
+V*> 11.0.0.0/8       179.4.5.4                     120      0 4 11 i
+V*                   179.3.5.3                     120      0 3 2 11 i
+V*  12.0.0.0/8       179.4.5.4                     120      0 4 2 12 i
+V*>                  179.3.5.3                     120      0 3 2 12 i
+V*  13.0.0.0/8       179.4.5.4                     120      0 4 13 i
+V*>i                 5.152.0.1                     150      0 12 13 i
+V*                   179.3.5.3                     120      0 3 12 13 i
+V*  14.0.0.0/8       179.4.5.4                     120      0 4 11 14 i
+V*>i                 5.152.0.1                0    150      0 14 i
+V*                   179.3.5.3                     120      0 3 14 i
+V*  15.0.0.0/8       179.4.5.4                     120      0 4 15 i
+V*>i                 5.152.0.1                     150      0 12 13 15 i
+V*                   179.3.5.3                     120      0 3 12 13 15 i
+V*  16.0.0.0/8       179.4.5.4                     120      0 4 13 16 i
+V*>i                 5.152.0.1                0    150      0 16 i
+V*                   179.3.5.3                     120      0 3 16 i
+
+Displayed 12 routes and 30 total paths
