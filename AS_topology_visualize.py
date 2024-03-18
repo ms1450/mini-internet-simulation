@@ -15,22 +15,26 @@ def create_graph(nodes, edges, edge_types, title, exclude_ixp=False):
 
     node_color_map = {'Tier 1 AS': 'red', 'Transit AS': 'orange', 'Stub AS': 'yellow'}
     edge_color_map = {'P2P': 'blue', 'P2C': 'green'}
+    pos = nx.spring_layout(G)
 
     node_color = [node_color_map.get(nodes[node]['type'], 'grey') for node in G.nodes()]
-
-    pos = nx.spring_layout(G)
 
     node_trace = go.Scatter(
         x=[pos[node][0] for node in G.nodes()],
         y=[pos[node][1] for node in G.nodes()],
         text=[node for node in G.nodes()],
-        mode='markers',
+        mode='markers+text',
         hoverinfo='text',
+        textposition='middle center',
         marker=dict(
             showscale=False,
-            size=15,
+            size=35,
             color=node_color,
             line_width=2
+        ),
+        textfont=dict(
+            color='black',
+            size=10
         )
     )
 
@@ -67,14 +71,14 @@ if __name__ == '__main__':
     edge_types = []
 
     # Read the node data
-    with open('Topology_Nodes_50.csv', 'r') as csvfile:
+    with open('./Topology/Topology_Nodes_50.csv', 'r') as csvfile:
         csvreader = csv.reader(csvfile)
         next(csvreader)  # Skip the header
         for row in csvreader:
             nodes[row[0]] = {'type': row[1]}
 
     # Read the edge data
-    with open('Topology_Links_50.csv', 'r') as csvfile:
+    with open('./Topology/Topology_Links_50.csv', 'r') as csvfile:
         csvreader = csv.reader(csvfile)
         next(csvreader)  # Skip the header
         for row in csvreader:

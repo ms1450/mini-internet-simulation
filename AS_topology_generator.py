@@ -388,11 +388,11 @@ if __name__ == "__main__":
     create_p2p_connections(ASes)
     IXPs = add_ixp_connections(ASes)
 
-    configuration_file_name = 'Topology_' + str(total_as) + '.txt'
-    as_file_name = 'list_of_ASes_' + str(total_as) + '.pkl'
-    ixp_file_name = 'list_of_IXPs_' + str(total_as) + '.pkl'
-    csv_connections_file_name = 'Topology_Links_' + str(total_as) + '.csv'
-    csv_nodes_file_name = 'Topology_Nodes_' + str(total_as) + '.csv'
+    configuration_file_name = './Topology/Topology_' + str(total_as) + '.txt'
+    as_file_name = './Topology/Topology_ASes_' + str(total_as) + '.pkl'
+    ixp_file_name = './Topology/Topology_IXPs_' + str(total_as) + '.pkl'
+    csv_connections_file_name = './Topology/Topology_Links_' + str(total_as) + '.csv'
+    csv_nodes_file_name = './Topology/Topology_Nodes_' + str(total_as) + '.csv'
 
     print("[+]\tConfiguring Topology: ", configuration_file_name)
     with open(configuration_file_name, 'w') as file:

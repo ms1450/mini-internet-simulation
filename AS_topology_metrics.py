@@ -1,4 +1,5 @@
 import csv
+import os
 import re
 
 
@@ -22,8 +23,8 @@ def extract_network_data(filepath):
         lines = file.readlines()
     raw_data = []
     for line in lines:
-        if line[0] == 'V':
-            values = line[4:].split(' ')
+        if line[0] == '*':
+            values = line[3:].split(' ')
             cleaned = [value.strip() for value in values if value.strip()]
             raw_data.append(cleaned)
 
@@ -72,15 +73,15 @@ def form_network_connections(AS, network_data):
     for values in network_data:
         if len(values[2]) == 1:
             pair = tuple(sorted((int(AS), int(values[2][0]))))
-            if pair not in connections:
+            if pair not in connections and AS != values[2][0]:
                 connections.append(pair)
         elif len(values[2]) > 1:
             first_pair = tuple(sorted((int(AS), int(values[2][0]))))
-            if first_pair not in connections:
+            if first_pair not in connections and AS != values[2][0]:
                 connections.append(first_pair)
             for i in range(len(values[2]) - 1):
                 next_pair = tuple(sorted((int(values[2][i]), int(values[2][i + 1]))))
-                if next_pair not in connections:
+                if next_pair not in connections and values[2][i] != values[2][i + 1]:
                     connections.append(next_pair)
     return connections
 
@@ -95,24 +96,26 @@ def get_non_ixp_metrics(connections, IXPs):
     return count
 
 
+def get_network_metrics(folder_path, ixp_nodes, num_links):
+    for filename in os.listdir(folder_path):
+        file_path = os.path.join(folder_path, filename)
+        if os.path.isfile(file_path):
+            AS, network_data = extract_network_data(file_path)
+            ipbgp_connections = form_network_connections(AS, network_data)
+            num_non_ixp_connections = get_non_ixp_metrics(ipbgp_connections, ixp_nodes)
+            print(f'[+]\t\t{filename}\t\tAS: {AS}\tNon-IXP Connections: {num_non_ixp_connections}/{len(ipbgp_connections)}(~{int((num_non_ixp_connections/num_non_ixp_links)*100)}%)\tEntries: {len(network_data)}')
+
+
 if __name__ == '__main__':
-    node_files = 'Topology_Nodes_50.csv'
-    link_files = 'Topology_Links_50.csv'
-    ipbgp_file = 'Sample BGP.txt'
+    node_files = './Topology/Topology_Nodes_50.csv'
+    link_files = './Topology/Topology_Links_50.csv'
+    ipbgp_folder = './IP_BGP/Pre-Poisoning/'
     print("[+]\tReading topology...")
     ixp_nodes = get_ixp_nodes(node_files)
     links = topology_metrics(link_files)
-    print("[+]\t\tTotal Links: ", len(links))
-    print("[+]\t\tNon IXP Links: ", get_non_ixp_metrics(links, ixp_nodes))
-    print("[+]\tExtracting IP BGP File...")
-    AS, network_data = extract_network_data(ipbgp_file)
-    print("[+]\t\tAS: ", AS)
-    print("[+]\t\tFile Name: ", ipbgp_file)
-    print("[+]\t\tFile Network Entries: ", len(network_data))
-    print("[+]\tForming Network Connections...")
-    ipbgp_connections = form_network_connections(AS, network_data)
-    print("[+]\t\tTotal Links: ", len(ipbgp_connections))
-    print("[+]\t\tNon IXP Links: ", get_non_ixp_metrics(ipbgp_connections, ixp_nodes))
+    num_non_ixp_links = get_non_ixp_metrics(links, ixp_nodes)
+    print(f'[+]\tComplete Topology Metrics\tNon-IXP Connections: {num_non_ixp_links}/{len(links)}')
+    get_network_metrics(ipbgp_folder, ixp_nodes, num_non_ixp_links)
 
 
 

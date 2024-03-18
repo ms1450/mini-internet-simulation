@@ -6,7 +6,7 @@ from AS_topology_generator import AutonomousSystem, InternetExchangePoint
 
 # Print AS_config.txt
 def print_AS_config(list_of_ASes, list_of_IXPs):
-    with open('AS_config.txt', 'w', newline='\n') as file:
+    with open('./Configuration/AS_config.txt', 'w', newline='\n') as file:
         for entry in list_of_ASes:
             if entry.as_id == 1:
                 string = str(entry.as_id) + "\tAS\tConfig\tl3_routers_krill.txt\tl3_links.txt\tempty.txt\tempty.txt\tempty.txt\n"
@@ -29,7 +29,7 @@ def get_ixp_connections(AS, IXP):
 
 # Print aslevel_links.txt
 def print_aslevel_links(list_of_ASes):
-    with open('aslevel_links.txt', 'w', newline='\n') as file:
+    with open('./Configuration/aslevel_links.txt', 'w', newline='\n') as file:
         completed = []
         for entry in list_of_ASes:
             completed.append(entry)
@@ -61,7 +61,7 @@ def get_smaller_connection(AS1, AS2):
 
 # Print as_level_links_students.txt
 def print_aslevel_links_students(list_of_ASes, list_of_IXPs):
-    with open('aslevel_links_students.txt', 'w', newline='\n') as file:
+    with open('./Configuration/aslevel_links_students.txt', 'w', newline='\n') as file:
         for entry in list_of_ASes:
             for customer in entry.customers:
                 string = str(entry.as_id) + "\tRTRA\tProvider\t" + str(
@@ -94,7 +94,7 @@ def print_aslevel_links_students(list_of_ASes, list_of_IXPs):
 
 # Print l3_routers.txt
 def print_l3_routers():
-    with open('l3_routers.txt', 'w', newline='\n') as file:
+    with open('./Configuration/l3_routers.txt', 'w', newline='\n') as file:
         file.write("RTRA\tDNS\thost:miniinterneteth/d_host\tvtysh\n")
         file.write("RTRB\tMATRIX_TARGET\troutinator:miniinterneteth/d_routinator\tvtysh\n")
         file.write("RTRC\tMATRIX\thost:miniinterneteth/d_host\tvtysh\n")
@@ -102,7 +102,7 @@ def print_l3_routers():
 
 # Print l3_routers_krill.txt
 def print_l3_routers_krill():
-    with open('l3_routers_krill.txt', 'w', newline='\n') as file:
+    with open('./Configuration/l3_routers_krill.txt', 'w', newline='\n') as file:
         file.write("RTRA\tDNS\tkrill:miniinterneteth/d_host\tvtysh\n")
         file.write("RTRB\tMATRIX_TARGET\troutinator:miniinterneteth/d_routinator\tvtysh\n")
         file.write("RTRC\tMATRIX\thost:miniinterneteth/d_host\tvtysh\n")
@@ -110,15 +110,15 @@ def print_l3_routers_krill():
 
 # Print l3_links.txt
 def print_l3_links():
-    with open('l3_links.txt', 'w', newline='\n') as file:
+    with open('./Configuration/l3_links.txt', 'w', newline='\n') as file:
         file.write("RTRA\tRTRB\t100000\t10ms\n")
         file.write("RTRB\tRTRC\t100000\t10ms\n")
         file.write("RTRC\tRTRA\t100000\t10ms\n")
 
 
 if __name__ == "__main__":
-    as_file_name = 'list_of_ASes_50.pkl'
-    ixp_file_name = 'list_of_IXPs_50.pkl'
+    as_file_name = '.\Topology\Topology_ASes_50.pkl'
+    ixp_file_name = '.\Topology\Topology_IXPs_50.pkl'
     ASes = []
     IXPs = []
     if os.path.exists(as_file_name) and os.path.exists(ixp_file_name):
